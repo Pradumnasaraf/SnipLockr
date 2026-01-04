@@ -1,0 +1,67 @@
+{
+  "name": "sniplockr",
+  "version": "0.1.0",
+  "description": "SnipLockr is a local-first code snippet manager built with React and TypeScript. Organize your code snippets with syntax highlighting, easy copying, download functionality, and optional folder organization.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pradumnasaraf/SnipLockr.git"
+  },
+  "author": "Pradumnasaraf",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Pradumnasaraf/SnipLockr/issues"
+  },
+  "homepage": "https://github.com/Pradumnasaraf/SnipLockr#readme",
+  "keywords": [
+    "code-snippets",
+    "snippet-manager",
+    "local-storage",
+    "code-editor",
+    "monaco-editor",
+    "syntax-highlighting",
+    "react",
+    "typescript",
+    "vite",
+    "local-first",
+    "code-organization",
+    "developer-tools"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext js,jsx,ts,tsx",
+    "lint:fix": "eslint . --ext js,jsx,ts,tsx --fix"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
+    "lucide-react": "^0.294.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@types/react-syntax-highlighter": "^15.5.11",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^17.0.0",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.51.0",
+    "vite": "^5.0.8"
+  }
+}
