@@ -46,4 +46,52 @@ npm run build
 
 The built files will be in the `dist` directory.
 
+## Docker
+
+### Production Build
+
+The production Docker image uses a multi-stage build with `node:22-alpine` for building and `nginx:alpine` for serving.
+
+Build and run with Docker:
+
+```bash
+# Build and run with docker-compose
+docker-compose up --build -d
+
+# Or build and run manually
+docker build -t sniplockr .
+docker run -d -p 80:80 sniplockr
+```
+
+The application will be available at `http://localhost`
+
+### Development with Docker
+
+Run the development server in Docker:
+
+```bash
+docker-compose -f docker-compose.dev.yml up
+```
+
+The development server will be available at `http://localhost:5173`
+
+### Docker Commands
+
+```bash
+# Build production image
+docker build -t sniplockr .
+
+# Run production container
+docker run -d -p 80:80 --name sniplockr sniplockr
+
+# Stop container
+docker stop sniplockr
+
+# Remove container
+docker rm sniplockr
+
+# View logs
+docker logs sniplockr
+```
+
 
