@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Folder, Snippet } from '../types';
 import { Plus, Trash2, Folder as FolderIcon, FileCode, ChevronDown, ChevronRight, Moon, Sun, X } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
@@ -40,15 +40,17 @@ export default function Sidebar({
   const [dragOverFolderId, setDragOverFolderId] = useState<string | null>(null);
   const dragTimeoutRef = useRef<number | null>(null);
 
-  const toggleFolder = (folderId: string) => {
-    const newExpanded = new Set(expandedFolders);
-    if (newExpanded.has(folderId)) {
-      newExpanded.delete(folderId);
-    } else {
-      newExpanded.add(folderId);
-    }
-    setExpandedFolders(newExpanded);
-  };
+  const toggleFolder = useCallback((folderId: string) => {
+    setExpandedFolders(prev => {
+      const newExpanded = new Set(prev);
+      if (newExpanded.has(folderId)) {
+        newExpanded.delete(folderId);
+      } else {
+        newExpanded.add(folderId);
+      }
+      return newExpanded;
+    });
+  }, []);
 
   const handleCreateFolder = () => {
     if (newFolderName.trim()) {
@@ -158,7 +160,7 @@ export default function Sidebar({
             onCreateSnippet(null);
             onSelectFolder(null);
           }}
-          className="w-full px-4 py-3 text-sm bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-600 dark:hover:to-blue-700 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg shadow-blue-500/30 dark:shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transform hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full px-4 py-3 text-sm bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-600 dark:hover:to-blue-700 transition-all duration-200 ease-out flex items-center justify-center gap-2 font-semibold shadow-lg shadow-blue-500/30 dark:shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transform hover:scale-[1.01] active:scale-[0.99]"
         >
           <Plus size={18} />
           New Snippet
@@ -179,11 +181,11 @@ export default function Sidebar({
                   draggable
                   onDragStart={(e) => handleDragStart(e, snippet.id)}
                   onDragEnd={handleDragEnd}
-                  className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all ${
+                  className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 ease-out ${
                     selectedSnippetId === snippet.id
                       ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100 shadow-md border border-blue-200 dark:border-blue-800'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 text-gray-700 dark:text-gray-300 border border-transparent'
-                  } ${draggedSnippetId === snippet.id ? 'opacity-40 scale-95' : ''}`}
+                  } ${draggedSnippetId === snippet.id ? 'opacity-40 scale-95' : 'animate-fade-in'}`}
                   onClick={() => {
                     onSelectSnippet(snippet);
                     onSelectFolder(null);
@@ -200,7 +202,7 @@ export default function Sidebar({
                     onMouseDown={(e) => {
                       e.stopPropagation();
                     }}
-                    className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-all"
+                    className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-opacity duration-200 ease-out"
                     title="Delete snippet"
                   >
                     <Trash2 size={14} className="text-red-600 dark:text-red-400" />
@@ -230,7 +232,7 @@ export default function Sidebar({
                       onDragOver={(e) => handleDragOver(e, folder.id)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, folder.id)}
-                      className={`group relative flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition-all ${
+                      className={`group relative flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 ease-out ${
                         isSelected 
                           ? 'bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-800' 
                           : isDragOver
@@ -282,18 +284,18 @@ export default function Sidebar({
                     </div>
 
                     {isExpanded && (
-                      <div className="ml-6 mt-1 space-y-1">
+                      <div className="ml-6 mt-1 space-y-1 animate-fade-in">
                         {folderSnippetsList.map((snippet) => (
                           <div
                             key={snippet.id}
                             draggable
                             onDragStart={(e) => handleDragStart(e, snippet.id)}
                             onDragEnd={handleDragEnd}
-                            className={`group relative flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all ${
+                            className={`group relative flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-all duration-200 ease-out ${
                               selectedSnippetId === snippet.id
                                 ? 'bg-blue-50 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100 shadow-sm border border-blue-200 dark:border-blue-800'
                                 : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 text-gray-700 dark:text-gray-300 border border-transparent'
-                            } ${draggedSnippetId === snippet.id ? 'opacity-40 scale-95' : ''}`}
+                            } ${draggedSnippetId === snippet.id ? 'opacity-40 scale-95' : 'animate-fade-in'}`}
                             onClick={() => {
                               onSelectSnippet(snippet);
                               onSelectFolder(folder.id);
@@ -311,7 +313,7 @@ export default function Sidebar({
                                 e.stopPropagation();
                                 e.preventDefault();
                               }}
-                              className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-all"
+                              className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-opacity duration-200 ease-out"
                               title="Delete snippet"
                             >
                               <Trash2 size={13} className="text-red-600 dark:text-red-400" />

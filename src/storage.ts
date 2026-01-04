@@ -9,12 +9,12 @@ export const storage = {
       const parsed = JSON.parse(data);
       // Migrate old data structure if needed
       if (parsed.courses && !parsed.folders) {
-        parsed.folders = parsed.courses.map((c: any) => ({
+        parsed.folders = (parsed.courses as Array<{ id: string; name: string; createdAt: number }>).map((c) => ({
           id: c.id,
           name: c.name,
           createdAt: c.createdAt,
         }));
-        parsed.snippets = parsed.snippets.map((s: any) => ({
+        parsed.snippets = (parsed.snippets as Array<{ courseId?: string; title?: string; filename?: string } & Snippet>).map((s) => ({
           ...s,
           folderId: s.courseId || null,
           filename: s.title || s.filename || 'untitled.txt',

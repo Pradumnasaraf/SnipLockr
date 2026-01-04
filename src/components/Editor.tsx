@@ -65,7 +65,7 @@ export default function Editor({ snippet, onUpdate }: EditorProps) {
     if (detectedLanguage !== language && filename !== snippet.filename) {
       setLanguage(detectedLanguage);
     }
-  }, [filename]);
+  }, [filename, language, snippet.filename]);
 
   // Auto-hide controls after 3 seconds of inactivity
   useEffect(() => {
@@ -145,11 +145,11 @@ export default function Editor({ snippet, onUpdate }: EditorProps) {
     >
       {/* Floating Controls */}
       <div 
-        className={`absolute top-4 left-1/2 transform -translate-x-1/2 z-10 transition-all duration-300 ${
+        className={`absolute top-4 left-1/2 transform -translate-x-1/2 z-10 transition-all duration-300 ease-out ${
           showControls ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}
       >
-        <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
+        <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 backdrop-blur-sm animate-slide-in">
           {/* Filename */}
           {isEditingFilename ? (
             <div className="flex items-center gap-2">
@@ -197,7 +197,7 @@ export default function Editor({ snippet, onUpdate }: EditorProps) {
           {/* Action Buttons */}
           <button
             onClick={handleCopy}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all text-sm font-medium ${
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all duration-200 ease-out text-sm font-medium ${
               copied
                 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -210,7 +210,7 @@ export default function Editor({ snippet, onUpdate }: EditorProps) {
 
           <button
             onClick={handleDownload}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all text-sm font-medium"
+            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 ease-out text-sm font-medium"
             title="Download file"
           >
             <Download size={16} />
@@ -219,7 +219,7 @@ export default function Editor({ snippet, onUpdate }: EditorProps) {
 
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all text-sm font-semibold shadow-lg shadow-blue-500/30"
+            className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-200 ease-out text-sm font-semibold shadow-lg shadow-blue-500/30"
             title="Save changes"
           >
             <Save size={16} />

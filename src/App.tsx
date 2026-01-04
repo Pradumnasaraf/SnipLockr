@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { storage } from './storage';
 import { Folder, Snippet } from './types';
 import Sidebar from './components/Sidebar';
@@ -18,17 +18,22 @@ function App() {
     setSnippets(data.snippets);
   }, []);
 
-  const handleCreateFolder = (name: string) => {
+  const rootSnippets = useMemo(() => 
+    snippets.filter(s => s.folderId === null), 
+    [snippets]
+  );
+
+  const handleCreateFolder = useCallback((name: string) => {
     const newFolder: Folder = {
       id: generateId(),
       name,
       createdAt: Date.now(),
     };
     storage.addFolder(newFolder);
-    setFolders([...folders, newFolder]);
-  };
+    setFolders(prev => [...prev, newFolder]);
+  }, []);
 
-  const handleCreateSnippet = (folderId: string | null = null) => {
+  const handleCreateSnippet = useCallback((folderId: string | null = null) => {
     const newSnippet: Snippet = {
       id: generateId(),
       filename: 'untitled.txt',
@@ -39,57 +44,42 @@ function App() {
       updatedAt: Date.now(),
     };
     storage.addSnippet(newSnippet);
-    const updatedSnippets = [...snippets, newSnippet];
-    setSnippets(updatedSnippets);
+    setSnippets(prev => [...prev, newSnippet]);
     setSelectedSnippet(newSnippet);
-    // Only set selectedFolderId if we're creating in a folder
     if (folderId) {
       setSelectedFolderId(folderId);
     }
-  };
+  }, []);
 
-  const handleUpdateSnippet = (snippetId: string, updates: Partial<Snippet>) => {
+  const handleUpdateSnippet = useCallback((snippetId: string, updates: Partial<Snippet>) => {
     storage.updateSnippet(snippetId, updates);
-    const updatedSnippets = snippets.map(s => s.id === snippetId ? { ...s, ...updates } : s);
-    setSnippets(updatedSnippets);
-    if (selectedSnippet?.id === snippetId) {
-      setSelectedSnippet({ ...selectedSnippet, ...updates });
-    }
-  };
+    setSnippets(prev => prev.map(s => s.id === snippetId ? { ...s, ...updates } : s));
+    setSelectedSnippet(prev => prev?.id === snippetId ? { ...prev, ...updates } : prev);
+  }, []);
 
-  const handleDeleteSnippet = (snippetId: string) => {
+  const handleDeleteSnippet = useCallback((snippetId: string) => {
     storage.deleteSnippet(snippetId);
-    const updatedSnippets = snippets.filter(s => s.id !== snippetId);
-    setSnippets(updatedSnippets);
-    if (selectedSnippet?.id === snippetId) {
-      setSelectedSnippet(null);
-    }
-  };
+    setSnippets(prev => prev.filter(s => s.id !== snippetId));
+    setSelectedSnippet(prev => prev?.id === snippetId ? null : prev);
+  }, []);
 
-  const handleDeleteFolder = (folderId: string) => {
+  const handleDeleteFolder = useCallback((folderId: string) => {
     storage.deleteFolder(folderId);
-    setFolders(folders.filter(f => f.id !== folderId));
-    const updatedSnippets = snippets.filter(s => s.folderId !== folderId);
-    setSnippets(updatedSnippets);
+    setFolders(prev => prev.filter(f => f.id !== folderId));
+    setSnippets(prev => prev.filter(s => s.folderId !== folderId));
     if (selectedFolderId === folderId) {
       setSelectedFolderId(null);
       setSelectedSnippet(null);
     }
-  };
+  }, [selectedFolderId]);
 
-  const handleMoveSnippet = (snippetId: string, targetFolderId: string | null) => {
+  const handleMoveSnippet = useCallback((snippetId: string, targetFolderId: string | null) => {
     storage.updateSnippet(snippetId, { folderId: targetFolderId });
-    const updatedSnippets = snippets.map(s => 
+    setSnippets(prev => prev.map(s => 
       s.id === snippetId ? { ...s, folderId: targetFolderId } : s
-    );
-    setSnippets(updatedSnippets);
-    if (selectedSnippet?.id === snippetId) {
-      setSelectedSnippet({ ...selectedSnippet, folderId: targetFolderId });
-    }
-  };
-
-  const rootSnippets = snippets.filter(s => s.folderId === null);
-  const allSnippets = snippets;
+    ));
+    setSelectedSnippet(prev => prev?.id === snippetId ? { ...prev, folderId: targetFolderId } : prev);
+  }, []);
 
   return (
     <ThemeProvider>
@@ -97,7 +87,7 @@ function App() {
         <Sidebar
           folders={folders}
           rootSnippets={rootSnippets}
-          allSnippets={allSnippets}
+          allSnippets={snippets}
           selectedFolderId={selectedFolderId}
           selectedSnippetId={selectedSnippet?.id || null}
           onSelectFolder={setSelectedFolderId}
@@ -110,12 +100,14 @@ function App() {
         />
         <div className="flex-1 flex flex-col">
           {selectedSnippet ? (
-            <Editor
-              snippet={selectedSnippet}
-              onUpdate={handleUpdateSnippet}
-            />
+            <div className="animate-fade-in">
+              <Editor
+                snippet={selectedSnippet}
+                onUpdate={handleUpdateSnippet}
+              />
+            </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-400 dark:text-gray-500">
+            <div className="flex-1 flex items-center justify-center text-gray-400 dark:text-gray-500 animate-fade-in">
               <div className="text-center">
                 <p className="text-lg mb-1">No snippet selected</p>
                 <p className="text-sm">Create or select a snippet to get started</p>
