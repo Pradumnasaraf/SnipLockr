@@ -5,13 +5,17 @@ import {
   Trash2,
   Folder as FolderIcon,
   FileCode,
+  FileText,
   ChevronDown,
   ChevronRight,
   Moon,
   Sun,
   X,
+  Settings,
 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { detectLanguageFromFilename } from '../utils';
+import * as SimpleIcons from 'react-icons/si';
 
 interface SidebarProps {
   folders: Folder[];
@@ -28,6 +32,142 @@ interface SidebarProps {
   onDeleteSnippet: (snippetId: string) => void;
   onMoveSnippet: (snippetId: string, folderId: string | null) => void;
 }
+
+// Get appropriate icon component based on file extension/language - returns actual language logos
+const getFileIcon = (filename: string, language: string) => {
+  const ext = filename.split('.').pop()?.toLowerCase() || '';
+  const detectedLang = detectLanguageFromFilename(filename) || language?.toLowerCase() || '';
+
+  // Map file extensions to react-icons/si component names
+  const extensionToComponentMap: Record<string, string> = {
+    // JavaScript
+    js: 'SiJavascript',
+    jsx: 'SiJavascript',
+
+    // TypeScript
+    ts: 'SiTypescript',
+    tsx: 'SiTypescript',
+
+    // Python
+    py: 'SiPython',
+
+    // Java
+    java: 'SiJava',
+
+    // C/C++
+    cpp: 'SiCplusplus',
+    c: 'SiC',
+    cc: 'SiCplusplus',
+    cxx: 'SiCplusplus',
+
+    // C#
+    cs: 'SiSharp',
+
+    // Go
+    go: 'SiGo',
+
+    // Rust
+    rs: 'SiRust',
+
+    // PHP
+    php: 'SiPhp',
+
+    // Ruby
+    rb: 'SiRuby',
+
+    // Swift
+    swift: 'SiSwift',
+
+    // Kotlin
+    kt: 'SiKotlin',
+
+    // HTML
+    html: 'SiHtml5',
+    htm: 'SiHtml5',
+
+    // CSS
+    css: 'SiCss3',
+    scss: 'SiSass',
+    sass: 'SiSass',
+
+    // JSON
+    json: 'SiJson',
+
+    // YAML
+    yaml: 'SiYaml',
+    yml: 'SiYaml',
+
+    // XML
+    xml: 'SiXml',
+
+    // Markdown
+    md: 'SiMarkdown',
+
+    // SQL
+    sql: 'SiMysql',
+
+    // Shell
+    sh: 'SiGnubash',
+    bash: 'SiGnubash',
+    ps1: 'SiPowershell',
+  };
+
+  // Map languages to react-icons/si component names
+  const languageToComponentMap: Record<string, string> = {
+    javascript: 'SiJavascript',
+    typescript: 'SiTypescript',
+    python: 'SiPython',
+    java: 'SiJava',
+    cpp: 'SiCplusplus',
+    c: 'SiC',
+    csharp: 'SiSharp',
+    go: 'SiGo',
+    rust: 'SiRust',
+    php: 'SiPhp',
+    ruby: 'SiRuby',
+    swift: 'SiSwift',
+    kotlin: 'SiKotlin',
+    html: 'SiHtml5',
+    css: 'SiCss3',
+    scss: 'SiSass',
+    json: 'SiJson',
+    yaml: 'SiYaml',
+    xml: 'SiXml',
+    markdown: 'SiMarkdown',
+    sql: 'SiMysql',
+    shell: 'SiGnubash',
+    bash: 'SiGnubash',
+    powershell: 'SiPowershell',
+  };
+
+  // Try to get icon component from extension first, then detected language, then provided language
+  const componentName =
+    extensionToComponentMap[ext] ||
+    languageToComponentMap[detectedLang] ||
+    languageToComponentMap[language?.toLowerCase()];
+
+  if (componentName) {
+    const IconComponent = (
+      SimpleIcons as Record<string, React.ComponentType<{ size?: number; className?: string }>>
+    )[componentName];
+    if (IconComponent) {
+      return IconComponent;
+    }
+  }
+
+  // Fallback to generic icons for unsupported types
+  const fallbackMap: Record<string, typeof FileCode> = {
+    txt: FileText,
+    config: Settings,
+    conf: Settings,
+    ini: Settings,
+    env: Settings,
+    toml: Settings,
+    lock: Settings,
+  };
+
+  return fallbackMap[ext] || FileCode;
+};
 
 export default function Sidebar({
   folders,
@@ -203,10 +343,15 @@ export default function Sidebar({
                     onSelectFolder(null);
                   }}
                 >
-                  <FileCode
-                    size={16}
-                    className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
-                  />
+                  {(() => {
+                    const FileIcon = getFileIcon(snippet.filename, snippet.language);
+                    return (
+                      <FileIcon
+                        size={16}
+                        className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
+                      />
+                    );
+                  })()}
                   <span className="flex-1 text-sm font-medium truncate flex items-center gap-1.5">
                     {snippet.filename}
                     {unsavedSnippetIds.has(snippet.id) && (
@@ -335,10 +480,16 @@ export default function Sidebar({
                               onSelectFolder(folder.id);
                             }}
                           >
-                            <FileCode
-                              size={14}
-                              className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
-                            />
+                            {(() => {
+                              const FileIcon = getFileIcon(snippet.filename, snippet.language);
+
+                              return (
+                                <FileIcon
+                                  size={14}
+                                  className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
+                                />
+                              );
+                            })()}
                             <span className="flex-1 text-sm font-medium truncate flex items-center gap-1.5">
                               {snippet.filename}
                               {unsavedSnippetIds.has(snippet.id) && (

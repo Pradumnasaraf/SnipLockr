@@ -53,10 +53,10 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
   const [copied, setCopied] = useState(false);
   const [isEditingFilename, setIsEditingFilename] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [hasPastedOnClick, setHasPastedOnClick] = useState(false);
   const filenameInputRef = useRef<HTMLInputElement>(null);
   const controlsTimeoutRef = useRef<number | null>(null);
   const editorRef = useRef<MonacoEditorInstance | null>(null);
-  const editorContainerRef = useRef<HTMLDivElement>(null);
 
   // Track if there are unsaved changes
   const hasUnsavedChanges =
@@ -73,7 +73,9 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
     setFilename(snippet.filename);
     setCode(snippet.code);
     setLanguage(snippet.language);
-  }, [snippet.id]);
+    setHasPastedOnClick(false); // Reset paste flag when snippet changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [snippet.id]); // Only depend on snippet.id to reset state when switching snippets
 
   // Focus editor when snippet changes
   useEffect(() => {
@@ -99,9 +101,9 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
     }
   }, [filename, language, snippet.filename]);
 
-  // Auto-hide controls after 3 seconds of inactivity
+  // Auto-hide controls after 3 seconds of inactivity (but not when editing filename or hovering)
   useEffect(() => {
-    if (showControls) {
+    if (showControls && !isEditingFilename) {
       if (controlsTimeoutRef.current) {
         window.clearTimeout(controlsTimeoutRef.current);
       }
@@ -114,7 +116,7 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
         window.clearTimeout(controlsTimeoutRef.current);
       }
     };
-  }, [showControls, code, filename]);
+  }, [showControls, code, filename, isEditingFilename]);
 
   const handleSave = () => {
     if (!hasUnsavedChanges) return; // Don't save if there are no changes
@@ -141,8 +143,13 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
   };
 
   const handleEditorChange = (value: string | undefined) => {
-    setCode(value || '');
+    const newCode = value || '';
+    setCode(newCode);
     setShowControls(true);
+    // Reset paste flag if code becomes empty again (user cleared it)
+    if (!newCode.trim()) {
+      setHasPastedOnClick(false);
+    }
   };
 
   const handleFilenameEdit = () => {
@@ -164,11 +171,43 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
     setFilename(snippet.filename);
   };
 
-  const handleEditorClick = () => {
+  const handleEditorClick = async () => {
     // Focus editor when clicking on container
     setTimeout(() => {
       editorRef.current?.focus();
     }, 0);
+
+    // If editor is empty and we haven't pasted yet, paste from clipboard
+    if (!code.trim() && !hasPastedOnClick && editorRef.current) {
+      try {
+        const clipboardText = await navigator.clipboard.readText();
+        if (clipboardText.trim()) {
+          setCode(clipboardText);
+          setHasPastedOnClick(true);
+          setShowControls(true);
+
+          // Update editor content and move cursor to end
+          setTimeout(() => {
+            if (editorRef.current) {
+              const model = editorRef.current.getModel();
+              if (model) {
+                const lineCount = model.getLineCount();
+                const lastLine = model.getLineContent(lineCount);
+                editorRef.current.setPosition({
+                  lineNumber: lineCount,
+                  column: lastLine.length + 1,
+                });
+                editorRef.current.revealLineInCenter(lineCount);
+              }
+            }
+          }, 100);
+        }
+      } catch {
+        // Clipboard access might fail (e.g., no permission or empty clipboard)
+        // Silently fail - user can still paste manually
+        // Error is intentionally not logged to avoid console noise
+      }
+    }
   };
 
   const monacoLanguage = languageMap[language] || 'plaintext';
@@ -178,11 +217,6 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
       className="flex-1 flex flex-col h-full w-full bg-white dark:bg-gray-900 transition-colors relative"
       style={{ minHeight: 0 }}
       onMouseMove={() => setShowControls(true)}
-      onMouseLeave={() => {
-        if (!isEditingFilename) {
-          setShowControls(false);
-        }
-      }}
     >
       {/* Floating Controls */}
       <div
@@ -192,6 +226,25 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
             : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}
         style={{ pointerEvents: showControls ? 'auto' : 'none' }}
+        onMouseEnter={() => {
+          setShowControls(true);
+          // Clear any pending hide timeout when hovering
+          if (controlsTimeoutRef.current) {
+            window.clearTimeout(controlsTimeoutRef.current);
+            controlsTimeoutRef.current = null;
+          }
+        }}
+        onMouseLeave={() => {
+          // Only hide if not editing filename
+          if (!isEditingFilename) {
+            if (controlsTimeoutRef.current) {
+              window.clearTimeout(controlsTimeoutRef.current);
+            }
+            controlsTimeoutRef.current = window.setTimeout(() => {
+              setShowControls(false);
+            }, 3000);
+          }
+        }}
       >
         <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 backdrop-blur-sm animate-slide-in">
           {/* Filename */}
@@ -290,7 +343,6 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
 
       {/* Full Screen Editor */}
       <div
-        ref={editorContainerRef}
         className="flex-1 overflow-hidden w-full relative"
         style={{
           minHeight: 0,
@@ -299,6 +351,26 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
         }}
         onClick={handleEditorClick}
       >
+        {/* Placeholder overlay for empty editor */}
+        {!code.trim() && (
+          <div
+            className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
+            style={{
+              backgroundColor:
+                theme === 'dark' ? 'rgba(17, 24, 39, 0.3)' : 'rgba(255, 255, 255, 0.3)',
+              backdropFilter: 'blur(2px)',
+            }}
+          >
+            <div className="text-center px-8 py-6 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg">
+              <p className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-1">
+                Click here to paste
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Your copied code will be pasted automatically
+              </p>
+            </div>
+          </div>
+        )}
         <MonacoEditor
           height="100%"
           width="100%"
