@@ -1,6 +1,16 @@
 import { useState, useRef, useCallback } from 'react';
 import { Folder, Snippet } from '../types';
-import { Plus, Trash2, Folder as FolderIcon, FileCode, ChevronDown, ChevronRight, Moon, Sun, X } from 'lucide-react';
+import {
+  Plus,
+  Trash2,
+  Folder as FolderIcon,
+  FileCode,
+  ChevronDown,
+  ChevronRight,
+  Moon,
+  Sun,
+  X,
+} from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface SidebarProps {
@@ -41,7 +51,7 @@ export default function Sidebar({
   const dragTimeoutRef = useRef<number | null>(null);
 
   const toggleFolder = useCallback((folderId: string) => {
-    setExpandedFolders(prev => {
+    setExpandedFolders((prev) => {
       const newExpanded = new Set(prev);
       if (newExpanded.has(folderId)) {
         newExpanded.delete(folderId);
@@ -87,14 +97,14 @@ export default function Sidebar({
     e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
     setDragOverFolderId(folderId);
-    
+
     // Auto-expand folder after hovering for 500ms
     if (folderId && !expandedFolders.has(folderId)) {
       if (dragTimeoutRef.current) {
         window.clearTimeout(dragTimeoutRef.current);
       }
       dragTimeoutRef.current = window.setTimeout(() => {
-        setExpandedFolders(prev => new Set([...prev, folderId]));
+        setExpandedFolders((prev) => new Set([...prev, folderId]));
       }, 500);
     }
   };
@@ -109,18 +119,18 @@ export default function Sidebar({
   const handleDrop = (e: React.DragEvent, targetFolderId: string | null) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (dragTimeoutRef.current) {
       window.clearTimeout(dragTimeoutRef.current);
     }
-    
+
     if (draggedSnippetId) {
-      const snippet = allSnippets.find(s => s.id === draggedSnippetId);
+      const snippet = allSnippets.find((s) => s.id === draggedSnippetId);
       if (snippet && snippet.folderId !== targetFolderId) {
         onMoveSnippet(draggedSnippetId, targetFolderId);
       }
     }
-    
+
     setDraggedSnippetId(null);
     setDragOverFolderId(null);
   };
@@ -153,7 +163,7 @@ export default function Sidebar({
             )}
           </button>
         </div>
-        
+
         {/* New Snippet Button */}
         <button
           onClick={() => {
@@ -191,7 +201,10 @@ export default function Sidebar({
                     onSelectFolder(null);
                   }}
                 >
-                  <FileCode size={16} className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`} />
+                  <FileCode
+                    size={16}
+                    className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
+                  />
                   <span className="flex-1 text-sm font-medium truncate">{snippet.filename}</span>
                   <button
                     onClick={(e) => {
@@ -221,7 +234,7 @@ export default function Sidebar({
             </div>
             <div className="space-y-1">
               {folders.map((folder) => {
-                const folderSnippetsList = allSnippets.filter(s => s.folderId === folder.id);
+                const folderSnippetsList = allSnippets.filter((s) => s.folderId === folder.id);
                 const isExpanded = expandedFolders.has(folder.id);
                 const isSelected = selectedFolderId === folder.id;
                 const isDragOver = dragOverFolderId === folder.id;
@@ -233,11 +246,11 @@ export default function Sidebar({
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, folder.id)}
                       className={`group relative flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 ease-out ${
-                        isSelected 
-                          ? 'bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-800' 
+                        isSelected
+                          ? 'bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-800'
                           : isDragOver
-                          ? 'bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-400 dark:border-blue-600 border-dashed'
-                          : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-transparent'
+                            ? 'bg-blue-50 dark:bg-blue-900/30 border-2 border-blue-400 dark:border-blue-600 border-dashed'
+                            : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-transparent'
                       }`}
                       onClick={() => {
                         toggleFolder(folder.id);
@@ -245,12 +258,23 @@ export default function Sidebar({
                       }}
                     >
                       {isExpanded ? (
-                        <ChevronDown size={16} className="text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                        <ChevronDown
+                          size={16}
+                          className="text-gray-500 dark:text-gray-400 flex-shrink-0"
+                        />
                       ) : (
-                        <ChevronRight size={16} className="text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                        <ChevronRight
+                          size={16}
+                          className="text-gray-500 dark:text-gray-400 flex-shrink-0"
+                        />
                       )}
-                      <FolderIcon size={16} className={`flex-shrink-0 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`} />
-                      <span className={`flex-1 text-sm font-medium truncate ${isSelected ? 'text-blue-900 dark:text-blue-100' : 'text-gray-700 dark:text-gray-300'}`}>
+                      <FolderIcon
+                        size={16}
+                        className={`flex-shrink-0 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
+                      />
+                      <span
+                        className={`flex-1 text-sm font-medium truncate ${isSelected ? 'text-blue-900 dark:text-blue-100' : 'text-gray-700 dark:text-gray-300'}`}
+                      >
                         {folder.name}
                       </span>
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -301,8 +325,13 @@ export default function Sidebar({
                               onSelectFolder(folder.id);
                             }}
                           >
-                            <FileCode size={14} className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`} />
-                            <span className="flex-1 text-sm font-medium truncate">{snippet.filename}</span>
+                            <FileCode
+                              size={14}
+                              className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
+                            />
+                            <span className="flex-1 text-sm font-medium truncate">
+                              {snippet.filename}
+                            </span>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();

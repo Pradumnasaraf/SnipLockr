@@ -21,10 +21,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       'react-hooks/exhaustive-deps': 'warn',
       'react-hooks/set-state-in-effect': 'off', // Allow state initialization in effects
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -35,6 +32,5 @@ export default tseslint.config(
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       '@typescript-eslint/no-explicit-any': 'warn',
     },
-  },
+  }
 );
-

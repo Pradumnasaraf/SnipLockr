@@ -23,4 +23,12 @@ dist-ssr
 *.sln
 *.sw?
 
+# Build outputs
+dist
+dist-ssr
+
+# Environment files
+.env
+.env.local
+.env.*.local
 

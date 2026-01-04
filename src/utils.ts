@@ -35,39 +35,39 @@ export const getFileExtension = (language: string): string => {
 
 export const detectLanguageFromFilename = (filename: string): string => {
   const ext = filename.split('.').pop()?.toLowerCase() || '';
-  
+
   const languageMap: Record<string, string> = {
-    'js': 'javascript',
-    'jsx': 'javascript',
-    'ts': 'typescript',
-    'tsx': 'typescript',
-    'py': 'python',
-    'java': 'java',
-    'cpp': 'cpp',
-    'cc': 'cpp',
-    'cxx': 'cpp',
-    'c': 'c',
-    'cs': 'csharp',
-    'go': 'go',
-    'rs': 'rust',
-    'php': 'php',
-    'rb': 'ruby',
-    'swift': 'swift',
-    'kt': 'kotlin',
-    'html': 'html',
-    'htm': 'html',
-    'css': 'css',
-    'scss': 'scss',
-    'sass': 'scss',
-    'json': 'json',
-    'xml': 'xml',
-    'yaml': 'yaml',
-    'yml': 'yaml',
-    'md': 'markdown',
-    'sql': 'sql',
-    'sh': 'shell',
-    'bash': 'bash',
-    'ps1': 'powershell',
+    js: 'javascript',
+    jsx: 'javascript',
+    ts: 'typescript',
+    tsx: 'typescript',
+    py: 'python',
+    java: 'java',
+    cpp: 'cpp',
+    cc: 'cpp',
+    cxx: 'cpp',
+    c: 'c',
+    cs: 'csharp',
+    go: 'go',
+    rs: 'rust',
+    php: 'php',
+    rb: 'ruby',
+    swift: 'swift',
+    kt: 'kotlin',
+    html: 'html',
+    htm: 'html',
+    css: 'css',
+    scss: 'scss',
+    sass: 'scss',
+    json: 'json',
+    xml: 'xml',
+    yaml: 'yaml',
+    yml: 'yaml',
+    md: 'markdown',
+    sql: 'sql',
+    sh: 'shell',
+    bash: 'bash',
+    ps1: 'powershell',
   };
 
   return languageMap[ext] || 'plaintext';
@@ -94,4 +94,3 @@ export const downloadFile = (content: string, filename: string): void => {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
-

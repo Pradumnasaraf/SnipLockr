@@ -18,4 +18,3 @@ export interface AppData {
   folders: Folder[];
   snippets: Snippet[];
 }
-
