@@ -9,12 +9,18 @@ export const storage = {
       const parsed = JSON.parse(data);
       // Migrate old data structure if needed
       if (parsed.courses && !parsed.folders) {
-        parsed.folders = (parsed.courses as Array<{ id: string; name: string; createdAt: number }>).map((c) => ({
+        parsed.folders = (
+          parsed.courses as Array<{ id: string; name: string; createdAt: number }>
+        ).map((c) => ({
           id: c.id,
           name: c.name,
           createdAt: c.createdAt,
         }));
-        parsed.snippets = (parsed.snippets as Array<{ courseId?: string; title?: string; filename?: string } & Snippet>).map((s) => ({
+        parsed.snippets = (
+          parsed.snippets as Array<
+            { courseId?: string; title?: string; filename?: string } & Snippet
+          >
+        ).map((s) => ({
           ...s,
           folderId: s.courseId || null,
           filename: s.title || s.filename || 'untitled.txt',
@@ -38,7 +44,7 @@ export const storage = {
 
   updateFolder(folderId: string, updates: Partial<Folder>): void {
     const data = this.getData();
-    const folder = data.folders.find(f => f.id === folderId);
+    const folder = data.folders.find((f) => f.id === folderId);
     if (folder) {
       Object.assign(folder, updates);
       this.saveData(data);
@@ -47,8 +53,8 @@ export const storage = {
 
   deleteFolder(folderId: string): void {
     const data = this.getData();
-    data.folders = data.folders.filter(f => f.id !== folderId);
-    data.snippets = data.snippets.filter(s => s.folderId !== folderId);
+    data.folders = data.folders.filter((f) => f.id !== folderId);
+    data.snippets = data.snippets.filter((s) => s.folderId !== folderId);
     this.saveData(data);
   },
 
@@ -60,7 +66,7 @@ export const storage = {
 
   updateSnippet(snippetId: string, updates: Partial<Snippet>): void {
     const data = this.getData();
-    const snippet = data.snippets.find(s => s.id === snippetId);
+    const snippet = data.snippets.find((s) => s.id === snippetId);
     if (snippet) {
       Object.assign(snippet, updates);
       snippet.updatedAt = Date.now();
@@ -70,8 +76,7 @@ export const storage = {
 
   deleteSnippet(snippetId: string): void {
     const data = this.getData();
-    data.snippets = data.snippets.filter(s => s.id !== snippetId);
+    data.snippets = data.snippets.filter((s) => s.id !== snippetId);
     this.saveData(data);
   },
 };
-

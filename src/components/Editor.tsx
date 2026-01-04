@@ -7,7 +7,9 @@ import { copyToClipboard, downloadFile, detectLanguageFromFilename } from '../ut
 import { useTheme } from '../contexts/ThemeContext';
 
 // Type for Monaco editor instance
-type MonacoEditorInstance = Parameters<NonNullable<React.ComponentProps<typeof MonacoEditor>['onMount']>>[0];
+type MonacoEditorInstance = Parameters<
+  NonNullable<React.ComponentProps<typeof MonacoEditor>['onMount']>
+>[0];
 
 interface EditorProps {
   snippet: Snippet;
@@ -134,7 +136,7 @@ export default function Editor({ snippet, onUpdate }: EditorProps) {
   const monacoLanguage = languageMap[language] || 'plaintext';
 
   return (
-    <div 
+    <div
       className="flex-1 flex flex-col h-full bg-white dark:bg-gray-900 transition-colors relative"
       onMouseMove={() => setShowControls(true)}
       onMouseLeave={() => {
@@ -144,9 +146,11 @@ export default function Editor({ snippet, onUpdate }: EditorProps) {
       }}
     >
       {/* Floating Controls */}
-      <div 
+      <div
         className={`absolute top-4 left-1/2 transform -translate-x-1/2 z-10 transition-all duration-300 ease-out ${
-          showControls ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+          showControls
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 -translate-y-2 pointer-events-none'
         }`}
       >
         <div className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 backdrop-blur-sm animate-slide-in">
@@ -188,7 +192,10 @@ export default function Editor({ snippet, onUpdate }: EditorProps) {
               title="Click to edit filename"
             >
               <span className="max-w-[200px] truncate">{filename}</span>
-              <Edit2 size={14} className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 dark:text-gray-400" />
+              <Edit2
+                size={14}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500 dark:text-gray-400"
+              />
             </button>
           )}
 

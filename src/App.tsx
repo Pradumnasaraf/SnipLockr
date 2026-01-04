@@ -18,10 +18,7 @@ function App() {
     setSnippets(data.snippets);
   }, []);
 
-  const rootSnippets = useMemo(() => 
-    snippets.filter(s => s.folderId === null), 
-    [snippets]
-  );
+  const rootSnippets = useMemo(() => snippets.filter((s) => s.folderId === null), [snippets]);
 
   const handleCreateFolder = useCallback((name: string) => {
     const newFolder: Folder = {
@@ -30,7 +27,7 @@ function App() {
       createdAt: Date.now(),
     };
     storage.addFolder(newFolder);
-    setFolders(prev => [...prev, newFolder]);
+    setFolders((prev) => [...prev, newFolder]);
   }, []);
 
   const handleCreateSnippet = useCallback((folderId: string | null = null) => {
@@ -44,7 +41,7 @@ function App() {
       updatedAt: Date.now(),
     };
     storage.addSnippet(newSnippet);
-    setSnippets(prev => [...prev, newSnippet]);
+    setSnippets((prev) => [...prev, newSnippet]);
     setSelectedSnippet(newSnippet);
     if (folderId) {
       setSelectedFolderId(folderId);
@@ -53,32 +50,37 @@ function App() {
 
   const handleUpdateSnippet = useCallback((snippetId: string, updates: Partial<Snippet>) => {
     storage.updateSnippet(snippetId, updates);
-    setSnippets(prev => prev.map(s => s.id === snippetId ? { ...s, ...updates } : s));
-    setSelectedSnippet(prev => prev?.id === snippetId ? { ...prev, ...updates } : prev);
+    setSnippets((prev) => prev.map((s) => (s.id === snippetId ? { ...s, ...updates } : s)));
+    setSelectedSnippet((prev) => (prev?.id === snippetId ? { ...prev, ...updates } : prev));
   }, []);
 
   const handleDeleteSnippet = useCallback((snippetId: string) => {
     storage.deleteSnippet(snippetId);
-    setSnippets(prev => prev.filter(s => s.id !== snippetId));
-    setSelectedSnippet(prev => prev?.id === snippetId ? null : prev);
+    setSnippets((prev) => prev.filter((s) => s.id !== snippetId));
+    setSelectedSnippet((prev) => (prev?.id === snippetId ? null : prev));
   }, []);
 
-  const handleDeleteFolder = useCallback((folderId: string) => {
-    storage.deleteFolder(folderId);
-    setFolders(prev => prev.filter(f => f.id !== folderId));
-    setSnippets(prev => prev.filter(s => s.folderId !== folderId));
-    if (selectedFolderId === folderId) {
-      setSelectedFolderId(null);
-      setSelectedSnippet(null);
-    }
-  }, [selectedFolderId]);
+  const handleDeleteFolder = useCallback(
+    (folderId: string) => {
+      storage.deleteFolder(folderId);
+      setFolders((prev) => prev.filter((f) => f.id !== folderId));
+      setSnippets((prev) => prev.filter((s) => s.folderId !== folderId));
+      if (selectedFolderId === folderId) {
+        setSelectedFolderId(null);
+        setSelectedSnippet(null);
+      }
+    },
+    [selectedFolderId]
+  );
 
   const handleMoveSnippet = useCallback((snippetId: string, targetFolderId: string | null) => {
     storage.updateSnippet(snippetId, { folderId: targetFolderId });
-    setSnippets(prev => prev.map(s => 
-      s.id === snippetId ? { ...s, folderId: targetFolderId } : s
-    ));
-    setSelectedSnippet(prev => prev?.id === snippetId ? { ...prev, folderId: targetFolderId } : prev);
+    setSnippets((prev) =>
+      prev.map((s) => (s.id === snippetId ? { ...s, folderId: targetFolderId } : s))
+    );
+    setSelectedSnippet((prev) =>
+      prev?.id === snippetId ? { ...prev, folderId: targetFolderId } : prev
+    );
   }, []);
 
   return (
@@ -101,10 +103,7 @@ function App() {
         <div className="flex-1 flex flex-col">
           {selectedSnippet ? (
             <div className="animate-fade-in">
-              <Editor
-                snippet={selectedSnippet}
-                onUpdate={handleUpdateSnippet}
-              />
+              <Editor snippet={selectedSnippet} onUpdate={handleUpdateSnippet} />
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400 dark:text-gray-500 animate-fade-in">

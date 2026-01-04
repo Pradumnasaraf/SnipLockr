@@ -1,24 +1,28 @@
 # SnipLockr
 
-A local-first code snippet manager built with React and TypeScript. Organize your code snippets into courses, with syntax highlighting, easy copying, and download functionality.
+A local-first code snippet manager built with React and TypeScript. Organize your code snippets with optional folders, syntax highlighting, easy copying, and download functionality.
 
 ## Features
 
-- 📁 **Course Organization**: Organize snippets into courses (categories)
+- 📁 **Optional Folder Organization**: Organize snippets into folders (optional)
 - 💾 **Local Storage**: All data is stored locally in your browser
-- 🎨 **Syntax Highlighting**: Beautiful syntax highlighting for 25+ languages
+- 🎨 **Syntax Highlighting**: Beautiful syntax highlighting with Monaco Editor for 25+ languages
 - 📋 **Easy Copy**: One-click copy to clipboard
 - ⬇️ **Download**: Download snippets as files with proper extensions
-- 🎯 **Simple UI**: Clean, modern interface with sidebar navigation
+- 🎯 **Clean UI**: Modern, distraction-free full-screen editor with floating controls
+- 🌙 **Dark Mode**: Toggle between light and dark themes
+- 🔄 **Drag & Drop**: Easily move snippets between folders
 
 ## Getting Started
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -27,12 +31,14 @@ npm run dev
 
 ## Usage
 
-1. **Create a Course**: Click "New Course" in the sidebar and enter a course name
-2. **Add Snippets**: Click the "+" button next to a course to add a new snippet
-3. **Edit Code**: Type or paste your code in the editor
-4. **Select Language**: Choose the programming language from the dropdown
-5. **Copy**: Click the "Copy" button to copy code to clipboard
+1. **Create a Snippet**: Click "New Snippet" in the sidebar to create a new code snippet
+2. **Create a Folder (Optional)**: Click "New Folder" to organize snippets into folders
+3. **Edit Filename**: Click on the filename in the floating controls to edit it (language is auto-detected from extension)
+4. **Edit Code**: Type or paste your code in the full-screen Monaco editor
+5. **Copy**: Click the "Copy" button in the floating controls to copy code to clipboard
 6. **Download**: Click "Download" to save the snippet as a file with the correct extension
+7. **Save**: Changes are auto-saved, or click "Save" to manually save
+8. **Drag & Drop**: Drag snippets to move them between folders or to root
 
 ## Supported Languages
 
@@ -93,5 +99,3 @@ docker rm sniplockr
 # View logs
 docker logs sniplockr
 ```
-
-
