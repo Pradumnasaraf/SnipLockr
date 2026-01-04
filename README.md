@@ -14,34 +14,44 @@ You can use SnipLockr in two ways either by using NPM or Docker.
 
 ### Using NPM
 
-1. Install dependencies:
+To use the NPM, run the following command to install dependencies and start the application:
 
 ```bash
-npm install
+npm install && npm run start
 ```
 
-2. Start the development server:
-
-```bash
-npm run dev
-```
-
-3. Open `http://localhost:5173` in your browser
+The application will be available at `http://localhost:5173`
 
 ### Using Docker
 
-**Development:**
+To use the Docker, build and start the production container by running the following command:
+
+```bash
+docker compose -f compose.yml up --build -d
+```
+
+The production application will be available at `http://localhost`
+
+## Development
+
+To use the development container, run the following command:
 
 ```bash
 docker compose -f compose.dev.yml up
 ```
 
-The development server will be available at `http://localhost:5173`
+The development application will be available at `http://localhost:5173`
 
-**Production:**
+To stop the development container, run the following command:
 
 ```bash
-docker compose up --build -d
+docker compose -f compose.dev.yml down
 ```
 
-The production server will be available at `http://localhost`
+## License
+
+**SnipLockr** is licensed under the Apache-2.0 License - see the [LICENSE](/LICENSE) file for details.
+
+## Security
+
+If you discover a security vulnerability within this project, please check the [SECURITY](SECURITY.md) file for more information.
