@@ -11,6 +11,7 @@ function App() {
   const [snippets, setSnippets] = useState<Snippet[]>([]);
   const [selectedSnippet, setSelectedSnippet] = useState<Snippet | null>(null);
   const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+  const [unsavedSnippetIds, setUnsavedSnippetIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const data = storage.getData();
@@ -52,6 +53,24 @@ function App() {
     storage.updateSnippet(snippetId, updates);
     setSnippets((prev) => prev.map((s) => (s.id === snippetId ? { ...s, ...updates } : s)));
     setSelectedSnippet((prev) => (prev?.id === snippetId ? { ...prev, ...updates } : prev));
+    // Clear unsaved changes when saved
+    setUnsavedSnippetIds((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(snippetId);
+      return newSet;
+    });
+  }, []);
+
+  const handleUnsavedChangesChange = useCallback((snippetId: string, hasChanges: boolean) => {
+    setUnsavedSnippetIds((prev) => {
+      const newSet = new Set(prev);
+      if (hasChanges) {
+        newSet.add(snippetId);
+      } else {
+        newSet.delete(snippetId);
+      }
+      return newSet;
+    });
   }, []);
 
   const handleDeleteSnippet = useCallback((snippetId: string) => {
@@ -92,6 +111,7 @@ function App() {
           allSnippets={snippets}
           selectedFolderId={selectedFolderId}
           selectedSnippetId={selectedSnippet?.id || null}
+          unsavedSnippetIds={unsavedSnippetIds}
           onSelectFolder={setSelectedFolderId}
           onSelectSnippet={setSelectedSnippet}
           onCreateFolder={handleCreateFolder}
@@ -100,10 +120,14 @@ function App() {
           onDeleteSnippet={handleDeleteSnippet}
           onMoveSnippet={handleMoveSnippet}
         />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col h-full overflow-hidden">
           {selectedSnippet ? (
-            <div className="animate-fade-in">
-              <Editor snippet={selectedSnippet} onUpdate={handleUpdateSnippet} />
+            <div className="flex-1 h-full w-full animate-fade-in">
+              <Editor
+                snippet={selectedSnippet}
+                onUpdate={handleUpdateSnippet}
+                onUnsavedChangesChange={handleUnsavedChangesChange}
+              />
             </div>
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400 dark:text-gray-500 animate-fade-in">

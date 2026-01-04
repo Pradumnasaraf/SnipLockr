@@ -60,3 +60,49 @@ body {
     transform: scale(1);
   }
 }
+
+/* Ensure Monaco Editor cursor is visible */
+.monaco-editor .cursors-layer .cursor {
+  background-color: var(--vscode-editorCursor-foreground, #000) !important;
+  border-left: 2px solid var(--vscode-editorCursor-foreground, #000) !important;
+}
+
+.monaco-editor.vs-dark .cursors-layer .cursor {
+  background-color: var(--vscode-editorCursor-foreground, #fff) !important;
+  border-left: 2px solid var(--vscode-editorCursor-foreground, #fff) !important;
+}
+
+/* Ensure line numbers are visible and properly styled */
+.monaco-editor .margin {
+  background-color: transparent !important;
+}
+
+.monaco-editor .line-numbers {
+  color: var(--vscode-editorLineNumber-foreground) !important;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace !important;
+  font-size: 14px !important;
+}
+
+.monaco-editor .line-numbers .line-number {
+  color: var(--vscode-editorLineNumber-foreground) !important;
+  text-align: right !important;
+  padding-right: 8px !important;
+}
+
+/* Light theme line numbers */
+.monaco-editor.vs .line-numbers {
+  color: #237893 !important;
+}
+
+.monaco-editor.vs .line-numbers .line-number {
+  color: #237893 !important;
+}
+
+/* Dark theme line numbers */
+.monaco-editor.vs-dark .line-numbers {
+  color: #858585 !important;
+}
+
+.monaco-editor.vs-dark .line-numbers .line-number {
+  color: #858585 !important;
+}

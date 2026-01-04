@@ -19,6 +19,7 @@ interface SidebarProps {
   allSnippets: Snippet[];
   selectedFolderId: string | null;
   selectedSnippetId: string | null;
+  unsavedSnippetIds: Set<string>;
   onSelectFolder: (folderId: string | null) => void;
   onSelectSnippet: (snippet: Snippet | null) => void;
   onCreateFolder: (name: string) => void;
@@ -34,6 +35,7 @@ export default function Sidebar({
   allSnippets,
   selectedFolderId,
   selectedSnippetId,
+  unsavedSnippetIds,
   onSelectFolder,
   onSelectSnippet,
   onCreateFolder,
@@ -205,7 +207,15 @@ export default function Sidebar({
                     size={16}
                     className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
                   />
-                  <span className="flex-1 text-sm font-medium truncate">{snippet.filename}</span>
+                  <span className="flex-1 text-sm font-medium truncate flex items-center gap-1.5">
+                    {snippet.filename}
+                    {unsavedSnippetIds.has(snippet.id) && (
+                      <span
+                        className="w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400 flex-shrink-0"
+                        title="Unsaved changes"
+                      />
+                    )}
+                  </span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -329,8 +339,14 @@ export default function Sidebar({
                               size={14}
                               className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
                             />
-                            <span className="flex-1 text-sm font-medium truncate">
+                            <span className="flex-1 text-sm font-medium truncate flex items-center gap-1.5">
                               {snippet.filename}
+                              {unsavedSnippetIds.has(snippet.id) && (
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400 flex-shrink-0"
+                                  title="Unsaved changes"
+                                />
+                              )}
                             </span>
                             <button
                               onClick={(e) => {
