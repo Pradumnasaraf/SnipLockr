@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background -->
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#bgGradient)"/>
+  
+  <!-- Lock body - centered and prominent -->
+  <rect x="38" y="54" width="52" height="44" rx="5" fill="white" opacity="0.98"/>
+  
+  <!-- Lock shackle - smooth arc -->
+  <path d="M 42 54 
+           Q 42 40 64 40 
+           Q 86 40 86 54" 
+        stroke="white" 
+        stroke-width="8" 
+        fill="none" 
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+  
+  <!-- Code brackets - larger and more visible -->
+  <g stroke="white" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+    <!-- Left bracket -->
+    <path d="M 18 46 L 30 64 L 18 82"/>
+    <!-- Right bracket -->
+    <path d="M 110 46 L 98 64 L 110 82"/>
+  </g>
+  
+  <!-- Code snippet lines inside lock -->
+  <g stroke="#2563eb" stroke-width="4.5" stroke-linecap="round" opacity="0.75">
+    <line x1="46" y1="66" x2="82" y2="66"/>
+    <line x1="46" y1="76" x2="74" y2="76"/>
+    <line x1="46" y1="86" x2="78" y2="86"/>
+  </g>
+  
+  <!-- Keyhole detail for extra polish -->
+  <circle cx="64" cy="76" r="4" fill="#2563eb" opacity="0.4"/>
+</svg>
