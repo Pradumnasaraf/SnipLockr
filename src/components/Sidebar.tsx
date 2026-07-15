@@ -288,9 +288,9 @@ export default function Sidebar({
   return (
     <div className="w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col h-full transition-colors shadow-sm">
       {/* Header */}
-      <div className="p-5 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <div className="p-5 border-b border-gray-200 dark:border-gray-800 bg-linear-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold bg-linear-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
             SnipLockr
           </h1>
           <button
@@ -312,7 +312,7 @@ export default function Sidebar({
             onCreateSnippet(null);
             onSelectFolder(null);
           }}
-          className="w-full px-4 py-3 text-sm bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-600 dark:hover:to-blue-700 transition-all duration-200 ease-out flex items-center justify-center gap-2 font-semibold shadow-lg shadow-blue-500/30 dark:shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transform hover:scale-[1.01] active:scale-[0.99]"
+          className="w-full px-4 py-3 text-sm bg-linear-to-r from-blue-600 to-blue-700 dark:from-blue-500 dark:to-blue-600 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 dark:hover:from-blue-600 dark:hover:to-blue-700 transition-all duration-200 ease-out flex items-center justify-center gap-2 font-semibold shadow-lg shadow-blue-500/30 dark:shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transform hover:scale-[1.01] active:scale-[0.99]"
         >
           <Plus size={18} />
           New Snippet
@@ -348,7 +348,7 @@ export default function Sidebar({
                     return (
                       <FileIcon
                         size={16}
-                        className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
+                        className={`shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
                       />
                     );
                   })()}
@@ -356,7 +356,7 @@ export default function Sidebar({
                     {snippet.filename}
                     {unsavedSnippetIds.has(snippet.id) && (
                       <span
-                        className="w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400 flex-shrink-0"
+                        className="w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400 shrink-0"
                         title="Unsaved changes"
                       />
                     )}
@@ -415,17 +415,17 @@ export default function Sidebar({
                       {isExpanded ? (
                         <ChevronDown
                           size={16}
-                          className="text-gray-500 dark:text-gray-400 flex-shrink-0"
+                          className="text-gray-500 dark:text-gray-400 shrink-0"
                         />
                       ) : (
                         <ChevronRight
                           size={16}
-                          className="text-gray-500 dark:text-gray-400 flex-shrink-0"
+                          className="text-gray-500 dark:text-gray-400 shrink-0"
                         />
                       )}
                       <FolderIcon
                         size={16}
-                        className={`flex-shrink-0 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
+                        className={`shrink-0 ${isSelected ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
                       />
                       <span
                         className={`flex-1 text-sm font-medium truncate ${isSelected ? 'text-blue-900 dark:text-blue-100' : 'text-gray-700 dark:text-gray-300'}`}
@@ -486,7 +486,7 @@ export default function Sidebar({
                               return (
                                 <FileIcon
                                   size={14}
-                                  className={`flex-shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
+                                  className={`shrink-0 ${selectedSnippetId === snippet.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'}`}
                                 />
                               );
                             })()}
@@ -494,7 +494,7 @@ export default function Sidebar({
                               {snippet.filename}
                               {unsavedSnippetIds.has(snippet.id) && (
                                 <span
-                                  className="w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400 flex-shrink-0"
+                                  className="w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400 shrink-0"
                                   title="Unsaved changes"
                                 />
                               )}

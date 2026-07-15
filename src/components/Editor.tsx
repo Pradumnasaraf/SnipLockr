@@ -288,7 +288,7 @@ export default function Editor({ snippet, onUpdate, onUnsavedChangesChange }: Ed
                 {filename}
                 {hasUnsavedChanges && (
                   <span
-                    className="w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400 flex-shrink-0"
+                    className="w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400 shrink-0"
                     title="Unsaved changes"
                   />
                 )}
