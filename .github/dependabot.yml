@@ -10,6 +10,16 @@ updates:
     commit-message:
       prefix: 'chore'
       include: 'scope'
+    # Hold ESLint on v9 and TypeScript on v5. typescript-eslint (latest v8)
+    # does not support ESLint v10 or TypeScript v7 yet, so bumping either
+    # breaks linting. Remove these ignores once typescript-eslint ships support.
+    ignore:
+      - dependency-name: 'eslint'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@eslint/js'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
   - package-ecosystem: 'github-actions'
     directory: '/'
